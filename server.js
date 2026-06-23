@@ -2,12 +2,14 @@ const express=require("express");
 const dotenv=require("dotenv");
 const connect=require("./src/config/db")
 const authRoutes=require("./src/routes/authRoutes")
+const shelfRoutes=require("./src/routes/shelfRoutes")
 
 dotenv.config();
 const app=express();
 app.use(express.json());
 
 app.use("/api/auth",authRoutes);
+app.use("/api/shelf",shelfRoutes);
 
 const startServer=async()=>{
     try{
