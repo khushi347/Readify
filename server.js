@@ -3,6 +3,7 @@ const dotenv=require("dotenv");
 const connect=require("./src/config/db")
 const authRoutes=require("./src/routes/authRoutes")
 const shelfRoutes=require("./src/routes/shelfRoutes")
+const dashboardRoutes=require("./src/routes/dashboardRoutes")
 
 dotenv.config();
 const app=express();
@@ -10,6 +11,7 @@ app.use(express.json());
 
 app.use("/api/auth",authRoutes);
 app.use("/api/shelf",shelfRoutes);
+app.use("/api/dashboard",dashboardRoutes)
 
 const startServer=async()=>{
     try{
