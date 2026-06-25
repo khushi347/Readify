@@ -1,78 +1,54 @@
-const UserBook=require("../models/UserBook");
-const mongoose=require("mongoose")
+const UserBook = require("../models/UserBook");
+const { getFavoriteGenre } = require("../services/dashboardService");
 
-const getDashboardSummary=async(req,res)=>{
-    try{
-        const userId=req.user.id;
-    
-    const totalBooksRead=await UserBook.countDocuments({
-        user:userId
-    })
+const getDashboardSummary = async (req, res) => {
 
-    const completedBooks=await UserBook.countDocuments({
-        user:userId,
-        status:"completed"
-    })
+    try {
 
-    const currentRead=await UserBook.countDocuments({
-        user:userId,
-        status:"reading"
-    })
+        const userId = req.user.id;
 
-    const wantToRead=await UserBook.countDocuments({
-        user:userId,
-        status:"want_to_read"
-    })
+        const totalBooksRead = await UserBook.countDocuments({
+            user: userId
+        });
 
-    const favoriteGenre=await UserBook.aggregate([
-        {
-            $match:{
-                user:new mongoose.Types.ObjectId(req.user.id)
-            }
-        },
+        const completedBooks = await UserBook.countDocuments({
+            user: userId,
+            status: "completed"
+        });
 
-        {
-            $group:{
-                _id:"$genre",
-                count:{
-                    $sum:1
-                }
-            }
-        },
+        const currentRead = await UserBook.countDocuments({
+            user: userId,
+            status: "reading"
+        });
 
-        {
-            $sort:{
-                count:-1
-            }
-        },
+        const wantToRead = await UserBook.countDocuments({
+            user: userId,
+            status: "want_to_read"
+        });
 
-        {
-            $limit:1
-        }
-    ])
+        const favoriteGenre = await getFavoriteGenre(userId);
 
-    const genre =
-    favoriteGenre.length > 0
-        ? favoriteGenre[0]._id
-        : null;
-        
-    res.status(200).json({
-        message:"Data fetched",
-        totalBooksRead,
-        completedBooks,
-        currentRead,
-        wantToRead,
-        favoriteGenre:genre
-    })
+        return res.status(200).json({
+            message: "Data fetched successfully",
+            totalBooksRead,
+            completedBooks,
+            currentRead,
+            wantToRead,
+            favoriteGenre
+        });
 
-    }   
-    catch(error){   
-        console.error(error)
-        res.status(500).json({
-            message:"Internal server error"
-        })
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+
     }
-    
-}
 
-module.exports={getDashboardSummary}
+};
+
+module.exports = {
+    getDashboardSummary
+};
