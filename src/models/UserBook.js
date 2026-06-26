@@ -37,16 +37,30 @@ const userBook=new mongoose.Schema({
         default:"want_to_read"
     },
 
+    progress:{
+        type:Number,
+        min:0,
+        max:100,
+        default:0
+    },
+
     rating:{
         type:Number,
         min:1,
         max:5
     },
 
+    review:{
+        type:String,
+        maxlength:1000,
+        default:""
+    },
+
     genre:{
         type:String,
         
-    },  
+    }, 
+
 },
 
 
