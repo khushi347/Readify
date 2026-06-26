@@ -57,11 +57,41 @@ const getShelf = async (req, res) => {
 
         const userId = req.user.id;
 
-        const books = await UserBook.find({
+        const { status, genre, sort } = req.query;
+
+        const filter = {
             user: userId
-        }).sort({
+        };
+
+        if (status) {
+            filter.status = status;
+        }
+
+        if (genre) {
+            filter.genre = genre;
+        }
+
+        let sortOption = {
             createdAt: -1
-        });
+        };
+
+        if (sort === "rating") {
+            sortOption = { rating: -1 };
+        }
+
+        if (sort === "progress") {
+            sortOption = { progress: -1 };
+        }
+
+        if (sort === "title") {
+            sortOption = { title: 1 };
+        }
+
+        if (sort === "oldest") {
+            sortOption = { createdAt: 1 };
+        }
+
+        const books = await UserBook.find(filter).sort(sortOption);
 
         if (books.length === 0) {
             return res.status(200).json({
