@@ -17,6 +17,8 @@ const fetchBooks = async (query) => {
         authors: book.volumeInfo.authors || [],
         thumbnail: book.volumeInfo.imageLinks?.thumbnail || null,
         genre: book.volumeInfo.categories?.[0] || "Unknown",
+        totalPages: book.volumeInfo.pageCount || null,
+        synopsis: book.volumeInfo.description || "",
     }));
 };
 

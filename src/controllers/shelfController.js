@@ -7,7 +7,10 @@ const addBook = async (req, res) => {
             title,
             authors,
             thumbnail,
-            genre
+            genre,
+            totalPages,
+            status,
+            progress
         } = req.body;
 
         const userId = req.user.id;
@@ -35,7 +38,10 @@ const addBook = async (req, res) => {
             title,
             authors,
             thumbnail,
-            genre
+            genre,
+            totalPages: totalPages || null,
+            status: status || "want_to_read",
+            progress: progress || 0
         });
 
         return res.status(201).json({
@@ -120,12 +126,11 @@ const updateBook = async (req, res) => {
         const userId = req.user.id;
         const bookId = req.params.id;
 
-        const { progress, rating,review } = req.body;
+        const { progress, rating, review, status, totalPages } = req.body;
 
         const updateData = {};
 
         if (progress !== undefined) {
-
             if (progress < 0 || progress > 100) {
                 return res.status(400).json({
                     message: "Progress must be between 0 and 100"
@@ -136,26 +141,47 @@ const updateBook = async (req, res) => {
 
             if (progress === 0) {
                 updateData.status = "want_to_read";
-                updateData.completedAt=null;
+                updateData.completedAt = null;
             } else if (progress === 100) {
                 updateData.status = "completed";
-                
-                const book=await UserBook.findById(bookId);
-                if(!book.completedAt){
-                    updateData.completedAt=new Date();
+                const book = await UserBook.findById(bookId);
+                if (book && !book.completedAt) {
+                    updateData.completedAt = new Date();
                 }
             } else {
                 updateData.status = "reading";
-                updateData.completedAt=null;
+                updateData.completedAt = null;
             }
+        } else if (status !== undefined) {
+            updateData.status = status;
+            if (status === "completed") {
+                updateData.progress = 100;
+                const book = await UserBook.findById(bookId);
+                if (book && !book.completedAt) {
+                    updateData.completedAt = new Date();
+                }
+            } else if (status === "want_to_read") {
+                updateData.progress = 0;
+                updateData.completedAt = null;
+            } else if (status === "reading") {
+                const book = await UserBook.findById(bookId);
+                if (book && (book.progress === 0 || book.progress === 100)) {
+                    updateData.progress = 10;
+                }
+                updateData.completedAt = null;
+            }
+        }
+
+        if (totalPages !== undefined) {
+            updateData.totalPages = totalPages;
         }
 
         if (rating !== undefined) {
             updateData.rating = rating;
         }
 
-        if(review!==undefined){
-            updateData.review=review;
+        if (review !== undefined) {
+            updateData.review = review;
         }
         
 

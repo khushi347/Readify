@@ -61,6 +61,11 @@ const userBook=new mongoose.Schema({
         
     }, 
 
+    totalPages:{
+        type:Number,
+        default:null
+    },
+
     completedAt:{
         type:Date,
         default:null

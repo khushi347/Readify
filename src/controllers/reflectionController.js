@@ -83,7 +83,32 @@ const getReflections = async (req, res) => {
     }
 };
 
+const getAllReflections = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const reflections = await Reflection.find({
+            user: userId
+        }).populate("book", "title authors").sort({
+            createdAt: -1
+        });
+
+        return res.status(200).json({
+            message: "Reflections fetched successfully",
+            reflections
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+};
+
 module.exports = {
     addReflection,
-    getReflections
+    getReflections,
+    getAllReflections
 };
