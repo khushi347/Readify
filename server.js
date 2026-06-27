@@ -5,6 +5,7 @@ const authRoutes=require("./src/routes/authRoutes")
 const shelfRoutes=require("./src/routes/shelfRoutes")
 const dashboardRoutes=require("./src/routes/dashboardRoutes")
 const bookRoutes=require("./src/routes/bookRoutes")
+const reflectionRoutes=require("./src/routes/reflectionRoutes")
 
 dotenv.config();
 const app=express();
@@ -14,6 +15,7 @@ app.use("/api/auth",authRoutes);
 app.use("/api/shelf",shelfRoutes);
 app.use("/api/dashboard",dashboardRoutes)
 app.use("/api/books",bookRoutes)
+app.use("/api/reflection",reflectionRoutes)
 
 const startServer=async()=>{
     try{
