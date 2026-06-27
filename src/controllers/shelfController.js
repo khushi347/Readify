@@ -136,10 +136,17 @@ const updateBook = async (req, res) => {
 
             if (progress === 0) {
                 updateData.status = "want_to_read";
+                updateData.completedAt=null;
             } else if (progress === 100) {
                 updateData.status = "completed";
+                
+                const book=await UserBook.findById(bookId);
+                if(!book.completedAt){
+                    updateData.completedAt=new Date();
+                }
             } else {
                 updateData.status = "reading";
+                updateData.completedAt=null;
             }
         }
 

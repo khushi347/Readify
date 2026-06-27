@@ -19,6 +19,11 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
         minlength:true
+    },
+
+    yearlyReadingGoal:{
+        type:Number,
+        default:20
     }
 },
 {timestamps:true}

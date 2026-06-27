@@ -1,9 +1,15 @@
-const express=require("express")
-const routes=express.Router();
+const express = require("express");
+const router = express.Router();
 
-const {authMiddleware}=require("../middleware/authMiddleware")
-const {getDashboardSummary}=require("../controllers/dashboardController")
+const {authMiddleware} = require("../middleware/authMiddleware");
 
-routes.get("/summary",authMiddleware,getDashboardSummary)
+const {
+    getDashboardSummary,
+    updateYearlyGoal
+} = require("../controllers/dashboardController");
 
-module.exports=routes;
+router.get("/summary", authMiddleware, getDashboardSummary);
+
+router.patch("/goal", authMiddleware, updateYearlyGoal);
+
+module.exports = router;

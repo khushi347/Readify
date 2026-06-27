@@ -61,6 +61,11 @@ const userBook=new mongoose.Schema({
         
     }, 
 
+    completedAt:{
+        type:Date,
+        default:null
+    }
+
 },
 
 
